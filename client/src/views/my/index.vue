@@ -1,7 +1,8 @@
 <template>
      <div class="wrap">
       <my-header></my-header>
-      <main class="main">
+       <main class="mained" v-if="goLogin">亲！您未登录,请前往<router-link to="/login">登录</router-link></main>
+      <main class="main" v-else-if="!goLogin">
           <div class="big">
               <div class="left" v-if="name">
                   <p>我的昵称</p>
@@ -62,6 +63,7 @@ export default {
     },
     data(){
         return {
+            goLogin:true,
             data:[
                 {
                     title:"待付款",
@@ -96,6 +98,9 @@ export default {
     created(){
         this.img =  window.localStorage.token ? "http://localhost:7002" +JSON.parse(window.localStorage.token).avatar :"";
         this.name =  window.localStorage.token ? JSON.parse(window.localStorage.token).nickname : "";
+         if( window.localStorage.token){
+            this.goLogin = false
+        }
     },
     mounted(){
 
@@ -108,6 +113,12 @@ export default {
        height:100%;
        display:flex;
        flex-direction: column;
+        .mained{
+           flex:1;
+           overflow: auto;
+           text-align: center;
+           line-height: 500px;
+       }
        .main{
            flex:1;
            overflow: auto;

@@ -38,19 +38,23 @@ let router =  new Router({
         {
             path:"/searchList",
             component:()=>import("../views/search/searchList.vue")
+        },
+        {
+            path:"/detail/:id/:typeId",
+            component:()=>import("../views/detail/index.vue")
         }
     ]
 })
 //进入购物车
-router.beforeEach((to,from,next)=>{
-    if(to.meta.isLogin){
-        if(window.localStorage.token){
-            next()
-        }else{
-            next("/login")
-        }
-    }else{
-        next()
-    }
-})
+// router.beforeEach((to,from,next)=>{
+//     if(to.meta.isLogin){
+//         if(window.localStorage.token){
+//             next()
+//         }else{
+//             next("/login")
+//         }
+//     }else{
+//         next()
+//     }
+// })
 export default router;

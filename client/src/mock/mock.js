@@ -2,43 +2,43 @@ const arr =
 [
     {
         title:"蔬菜每日鲜",
-        img:require("../assets/image/1_03.png")
+        img:"1_03.png"
     },
     {
         title:"肉蛋类",
-         img:require("../assets/image/2_03.png")
+         img:"2_03.png"
     },
      {
         title:"母婴天地",
-         img:require("../assets/image/3_03.png")
+         img:"3_03.png"
     },
     {
         title:"进店必买",
-         img:require("../assets/image/4_03.png")
+         img:"4_03.png"
     },
      {
         title:"美通卡",
-         img:require("../assets/image/5_03.png")
+         img:"5_03.png"
     },
     {
         title:"早晚市",
-         img:require("../assets/image/6_03.png")
+         img:"6_03.png"
     },
      {
         title:"品牌汇",
-         img:require("../assets/image/7_03.png")
+         img:"7_03.png"
     },
     {
         title:"领券中心",
-         img:require("../assets/image/8_03.png")
+         img:"8_03.png"
     },
      {
         title:"支付优惠",
-         img:require("../assets/image/9_03.png")
+         img:"9_03.png"
     },
     {
         title:"直采品牌",
-         img:require("../assets/image/10_03.png")
+         img:"10_03.png"
     }
 ]
 export default arr;

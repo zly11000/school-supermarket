@@ -66,16 +66,10 @@ export default {
     },
     computed:{
     },
-    // mixins:[scrolled],
      activated(){
       this.$refs.main.scrollTop = this.scrollTop
      },
     methods:{
-    //     scrollList() {
-    //         this.page += 1;
-    //         this.rightLigth();
-    //         this.openSize = true
-    // },
         add(id,ied){
             this.ind = id;
             this.parentId = ied
@@ -105,7 +99,7 @@ export default {
            this.rightLigth()
         },
         childs(){
-               list.shopType().then(data=>{
+            list.shopType().then(data=>{
             this.leftList = data.data;
              this.childArr = data.data.filter((item,index)=> item.id === this.leftList[this.ind].id && this.leftList[this.ind].id)[0].children
              this.rightLigth()
@@ -128,8 +122,6 @@ export default {
          this.childs()
     },
     mounted(){
-        // this.scrollTo(this.$refs.main,this.scrollTop);
-
     }
 }
 </script>

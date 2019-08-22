@@ -47,7 +47,6 @@ export default {
         itemed(item){
             console.log(item)
             window.localStorage.item = JSON.stringify(item);
-            console.log(window.localStorage.item)
             this.$router.push("/home")
         }
 

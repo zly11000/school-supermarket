@@ -1,6 +1,7 @@
 <template>
-  <dl>
-    <slot></slot>
+<div class="biged">
+  <slot name="input"></slot>
+  <dl @click="detail">
     <dt>
       <img :src="item.cover"/>
     </dt>
@@ -15,18 +16,20 @@
           ￥
           <b>{{item.price}}</b>
         </span>
-        <span v-if="open" @click="goCar(index,item.id)" :style="{background:'red'}">
+        <span v-if="open" @click.stop="goCar(index,item.id)" :style="{background:'red'}">
             <i class="iconfont icon-gouwuche"></i>
         </span>
         <span v-else-if="open">
-           <my-count :item="ite"></my-count>
+          <slot name="count"></slot>
+           <!-- <my-count :item="ite" :brr="brr" :allInputs="allInputs"></my-count> -->
         </span>
          <span v-else>
-           <my-count :item="ite"></my-count>
+           <slot name="count"></slot>
         </span>
       </p>
     </dd>
   </dl>
+  </div>
 </template>
 <script>
 import list from "@/api/home/index";
@@ -45,9 +48,14 @@ export default {
     },
     ite:{
       type:Object
+    },
+    brr:{
+      type:Array
+    },
+    allInputs:{
+      type:Boolean
     }
   },
-  // props: ["item", "index", "open","ite","searchOpen"],
   components: {
       myCount
   },
@@ -58,13 +66,15 @@ export default {
   },
   computed: {},
   methods: {
+    detail(){
+      this.$router.push("/detail/"+ this.item.id + "/" + this.item.type_id)
+    },
     goCar(ind, id) {
          list.addCar({
           user_id: JSON.parse(window.localStorage.token).userid,
           shop_id: id
         }).then(data =>{
            alert(data.msg);
-          // window.sessionStorage.ite = JSON.stringify(this.item)
         });
     }
    
@@ -74,7 +84,13 @@ export default {
 };
 </script>
 <style scoped lang="scss">
+.biged{
+  width:100%;
+  height:100%;
+  display: flex;
+}
 dl {
+  flex:9;
   width: 100%;
   min-height: 150px;
   border-bottom: 1px solid #ccc;
@@ -123,7 +139,7 @@ dl {
     p {
       display: flex;
       justify-content: space-between;
-      margin: 8px 0;
+      margin: 10px 0;
     }
     p:nth-child(1) {
       display: block;

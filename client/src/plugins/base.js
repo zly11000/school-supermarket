@@ -1,7 +1,7 @@
 import components from "@/components/index";
 function componentName(name){
     return name.replace(/[A-Z]/g,(reg)=>{
-        return "_"+reg.toLowerCase();
+        return "-"+reg.toLowerCase();
     })
 }
 export default {

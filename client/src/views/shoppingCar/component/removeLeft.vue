@@ -6,7 +6,7 @@
                <slot>
                </slot>
         </div>
-        <span class="dele" @click="deletes(ind)" :style="{
+        <span class="dele" @click.stop="deletes(ind)" :style="{
             right:`${-100-remove.movex}px`
         }">删除</span>
     </div>
@@ -76,20 +76,19 @@ export default {
              }
              if(removex < -10){
                  //滑动时让删除盒子回到原来的位置
+                 
                  this.brforePosition()
+                 console.log(this.remove.movex)
              }
         },
         //点击删除
         deletes(ind){
             list.removeShop({
-                 user_id: JSON.parse(window.localStorage.token).userid,
+                 user_id:JSON.parse(window.localStorage.token).userid,
                  shop_id:this.item.shopdata.id
             }).then(data=>{
-                // alert(data.statusMsg)
                 if(data.code){
-                   let index = this.arr.findIndex(item=>item.shopdata.id === this.item.shopdata.id);
-                   this.arr.splice(index,1)
-                   this.brforePosition()
+                     this.$emit("delete",this.brforePosition,this.item)
                 }
             })
         }

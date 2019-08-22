@@ -9,7 +9,7 @@
                 <span @click="searchs">搜索</span>
             </div>
             <div class="bottom">
-               <my-List v-for="(item,index) in arr" :item="item" :index="index" :open="true"></my-List>
+               <my-List v-for="(item,index) in arr" :item="item" :index="index" :open="true "></my-List>
             </div>
         </main>
     </div>

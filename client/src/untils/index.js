@@ -7,7 +7,7 @@ httpAxios.interceptors.request.use((config) => {
     return {
         ...config,
         headers:{
-            authorization:window.localStorage.getItem("token") ? JSON.parse(window.localStorage.getItem("token")).token : ''
+            authorization:window.localStorage.getItem("token") ? JSON.parse(window.localStorage.getItem("token")).token: ''
         }
     }
 }, (error) => {

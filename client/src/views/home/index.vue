@@ -21,7 +21,7 @@
         </div>
         <div class="icon">
           <div class="item" v-for="(item,index) in arr" :key="index">
-            <img :src="item.img" />
+            <img :src="require('../../assets/image/'+item.img) " />
             <span>{{item.title}}</span>
           </div>
         </div>
@@ -97,12 +97,10 @@ export default {
           pageid: this.page,
           limit: 10
         }).then(data => {
+          console.log(data)
           this.shopList = this.shopList.concat(data.data);
-           
         })
-        
         }
-         
     },
     searched() {
       this.$router.push("/search");
