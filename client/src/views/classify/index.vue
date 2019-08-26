@@ -1,6 +1,6 @@
 <template>
     <div class="wrap">
-      <my-header></my-header>
+       <my-header/>
       <main class="main">
           <div class="input">
           <input type="text" placeholder="搜索校园超市商品" @click="searched"/>
@@ -38,7 +38,6 @@
 <script>
 import list from "../../api/home/index";
 import myItem from "../home/component/index";
-// import scrolled from "@/minxin/scroll.js";
 export default {
     name:"classify",
     props:{

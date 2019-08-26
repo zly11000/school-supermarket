@@ -1,8 +1,7 @@
 <template>
      <div class="wrap">
       <my-header></my-header>
-       <main class="mained" v-if="goLogin">亲！您未登录,请前往<router-link to="/login">登录</router-link></main>
-      <main class="main" v-else-if="!goLogin">
+      <main class="main">
           <div class="big">
               <div class="left" v-if="name">
                   <p>我的昵称</p>

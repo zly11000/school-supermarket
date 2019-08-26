@@ -1,23 +1,26 @@
 <template>
   <div class="wrap">
     <my-header></my-header>
+       
     <div class="input">
       <p @click="searched">
           <i class="iconfont icon-dingwei"></i>
+          <span class="address" v-if="add">{{add}}</span>
+          <span class="address" v-else>{{address}}</span>
       </p>
       <p>搜索</p>
     </div>
     <main class="main" id="main" ref="main">
       <div>
-        <div class="banner">
-          <swiper :options="swiperOption" v-if="bannerList">
+        <div class="banner" v-if="bannerList">
+         <my-swiper  :autoplay="true">
             <!-- slides -->
             <swiper-slide v-for="item in bannerList" :key="item.id">
               <a :href="item.url">
                 <img :src="item.image" />
               </a>
             </swiper-slide>
-          </swiper>
+         </my-swiper>
         </div>
         <div class="icon">
           <div class="item" v-for="(item,index) in arr" :key="index">
@@ -43,15 +46,18 @@
           <p v-if="sizeOpen">到底了..</p>
         </div>
       </div>
+     
     </main>
     <my-footer></my-footer>
   </div>
 </template>
 <script>
 import list from "@/api/home/index";
-import arr from "../../mock/mock";
+import arr from "@/mock/mock";
 import myItem from "../home/component/index";
 import scrolled from "@/minxin/scroll.js";
+import mySwiper from "../../components/swiper"
+import { setTimeout, setInterval } from 'timers';
 export default {
   name:"home",
   props: {},
@@ -62,16 +68,6 @@ export default {
     return {
       open: true,
       arr,
-      swiperOption: {
-        loop: true,
-        autoplay: true,
-        observer: true, //修改swiper自己或子元素时，自动初始化swiper
-        observeParents: true, //修改swiper的父元素时，自动初始化swiper
-        autoplay: {
-          delay: 2500,
-          disableOnInteraction: false
-        }
-      },
       bannerStart: "",
       bannerEnd: "",
       bannerList: [],
@@ -80,7 +76,11 @@ export default {
       address: "",
       scrollTop:0,
       maxSize:1,
-      sizeOpen:false
+      sizeOpen:false,
+      add:"",
+      show:false,
+      timer:null
+     
     };
   },
   computed: {},
@@ -97,19 +97,26 @@ export default {
           pageid: this.page,
           limit: 10
         }).then(data => {
-          console.log(data)
           this.shopList = this.shopList.concat(data.data);
         })
         }
     },
     searched() {
       this.$router.push("/search");
-    }
+    },
   },
   activated(){
-      this.$refs.main.scrollTop = this.scrollTop
+      this.$refs.main.scrollTop = this.scrollTop;
+       this.add = window.localStorage.address
   },
   created() {
+    if(window.localStorage.address){
+           this.add = window.localStorage.address
+    }else{
+        this.timer = setTimeout(()=>{
+             this.$router.push("/location") 
+            },3000) 
+    }
     list.homeBanner().then(data => {
       let currentTime = new Date() * 1;
       data.data.forEach(item => {
@@ -128,6 +135,10 @@ export default {
   },
   mounted() {
     this.scrollTo(this.$refs.main,this.scrollTop);
+  },
+   destroyed() {
+      //清除定时器
+       clearTimeout(this.timer);
   }
 };
 </script>
@@ -148,10 +159,21 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 0 5px;
+    .address{
+       display:inline-block;
+      padding-left:5px;
+      width:200px;
+      height:20px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      line-height:30px;
+      font-size: 12px;
+    }
   }
   .banner {
     width: 100%;
-    height: 100px;
+    height: 150px;
     overflow: hidden;
     img {
       width: 100%;

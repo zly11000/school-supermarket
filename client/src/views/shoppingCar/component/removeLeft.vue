@@ -9,10 +9,12 @@
         <span class="dele" @click.stop="deletes(ind)" :style="{
             right:`${-100-remove.movex}px`
         }">删除</span>
+        <my-alert :show="show" :title="tit"></my-alert>
     </div>
 </template>
 <script>
 import list from "@/api/home/index"
+import { setInterval } from 'timers';
 export default {
     props:{
         ind:{
@@ -30,13 +32,17 @@ export default {
     },
     data(){
         return {
+            show:false,
+            tit:"",
+            timer:null,
             remove:{
                 startx:0,
                 starty:0,
                 curx:0,
                 cury:0,
                 movex:0,
-                movey:0
+                movey:0,
+                
             }
         }
     },
@@ -78,27 +84,31 @@ export default {
                  //滑动时让删除盒子回到原来的位置
                  
                  this.brforePosition()
-                 console.log(this.remove.movex)
+                //  console.log(this.remove.movex)
              }
         },
         //点击删除
         deletes(ind){
+            this.show=true,
+            this.timer = setInterval(()=>{
+                this.show = false
+            },2000)
             list.removeShop({
                  user_id:JSON.parse(window.localStorage.token).userid,
                  shop_id:this.item.shopdata.id
             }).then(data=>{
                 if(data.code){
+                    this.tit = "删除成功"
                      this.$emit("delete",this.brforePosition,this.item)
                 }
             })
         }
     },
-    created(){
-
-    },
-    mounted(){
-
+      destroyed() {
+            //清除定时器
+            clearInterval(this.timer);
     }
+   
 }
 </script>
 <style scoped lang="scss">
@@ -115,6 +125,7 @@ export default {
       .dele{
           width:100px;
           height:100%;
+          display: block;
           background: red;
           line-height: 150px;
           color:#fff;

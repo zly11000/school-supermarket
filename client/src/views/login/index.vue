@@ -1,11 +1,11 @@
 <template>
     <div class="wrap">
-        <div class="mark" v-if="open"></div>
+        <div class="mark" v-if="open" @click.self="marked"></div>
           <div class="mark-box" v-if="open">
                 <p class="first">请输入验证码</p>
-               <p>6位短信验证已发送至</p>
+               <p>6位短信验证已发送至{{phoneValue}}</p>
                 <my-input @data="getlist"></my-input>
-
+                 <p class="minutes" v-if="!show">{{minutes}}秒后重新发送</p>
                  <p class="last" @click="logind">
                     <span>登陆</span>
                 </p>
@@ -16,7 +16,7 @@
              <div class="input">
                  <input type="text" v-model="phoneValue" placeholder="手机号"/>
              </div>
-             <div class="box" @click="number" ref="box">
+             <div class="box" @click="number" ref="box" v-bind:style="{'background':colorFlag ? 'orange':'#ccc'}">
                  <span>获取验证码</span>
              </div>
         </main>
@@ -26,7 +26,8 @@
 import myInput from "./component/inputs"
 import userd from "@/api/login/index";
 import axios from "axios";
-console.log(userd)
+import { setInterval, clearInterval } from 'timers';
+// console.log(userd)
 export default {
     props:{
 
@@ -41,32 +42,49 @@ export default {
             phoneValue:"",
             title:"",
             ind:-1,
-            res:""
+            res:"",
+            colorFlag:false,
+            minutes:60,
+            timer:null,
+            show: true,
         }
     },
     computed:{
 
     },
     methods:{
-        number(){
-            this.$refs.box.style.backgroundColor="#ccc";
-            if(this.phoneValue.trim() === ""){
+        num(){
+            // console.log(this.phoneValue)
+               if(this.phoneValue.trim() === "" && this.colorFlag === false){
                 return;
             }
             userd.code({
                 phone:this.phoneValue
             }).then(data=>{
-                console.log(data)
+                // console.log(data)
                 if(data.code){
                      this.open = !this.open;
                 }
             }).catch(data=>{
-                console.log(data)
+                // console.log(data)
             })
+        },
+        number(){
+            this.num()
+             this.show = false;
+            this.timer = setInterval(()=>{
+             if(this.minutes > 0 && this.minutes <= 60){
+                  this.minutes--;
+        }else{
+             this.show = true;
+           clearInterval(this.timer);
+           this.timer = null;
+        }
+         },1000)
         },
         getlist(res){
             this.res = res;
-            console.log(this.res)
+            // console.log(this.res)
         },
           logind(){
              userd.user({
@@ -79,12 +97,25 @@ export default {
                  window.localStorage.token = JSON.stringify(data.data)
              })
         },
+        marked(){
+             this.open = false; //蒙层取消
+             this.show = false 
+        }
     },
     created(){
-
     },
-    mounted(){
-
+    mounted(){},
+     watch:{
+       phoneValue(){
+        let reg = "13412341234";
+         if(this.phoneValue === reg){
+             this.colorFlag = true
+         }
+       }
+    },
+     destroyed() {
+        //清除时器定
+      clearInterval(this.timer);
     }
 }
 </script>
@@ -109,6 +140,10 @@ export default {
   top:50%;
    overflow: hidden;
   transform: translateX(-50%) translateY(-50%);
+  .minutes{
+      font-size: 12px;
+      padding-top:7px;
+  }
   .first{
       font-size:20px;
   }

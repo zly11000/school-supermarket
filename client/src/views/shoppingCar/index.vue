@@ -3,7 +3,7 @@
       <my-header></my-header>
       <main class="mained" v-if="goLogin">亲！您未登录,请前往<router-link to="/login">登录</router-link></main>
       <main class="main" v-else-if="!goLogin">
-        <my-remove  v-for="(item,index) in arr" :key="index" :item="item" :ind="index" :arr="arr" @dele="deleCont" @delete="deleteList">
+        <my-remove  v-for="(item,index) in arr" :key="index" :item="item" :ind="index" :arr="arr" @delete="deleteList">
            <my-item :item="item.shopdata" :ite="item" :index="index" :open="false" :brr="brr" :allInputs="allInputs">
                <template slot="input">
                     <input type="checkbox" class="inputs"  ref="ipt" @change.stop="ipts(index)" v-model="brr[index].flag" slot="input"/>
@@ -40,7 +40,9 @@ import list from "@/api/home/index";
 import myItem from "../home/component/index";
 import myRemove from "./component/removeLeft";
 import myCount from "./component/count"
+import {mapState,mapActions} from "vuex";
 export default {
+    name:"shoppingCar",
     props:{
 
     },
@@ -59,38 +61,20 @@ export default {
             brr:[],
             allPrice:0,
             allInputs:false,
-            goLogin:true
+            goLogin:true,
+           
         }
     },
+    computed:{
+      ...mapState("list",["arrList"])       
+    },
     methods:{
-      getList(){
-                list.shopping({
-                params:{
-                    user_id: window.localStorage.token && JSON.parse(window.localStorage.token).userid 
-                }
-        }).then(data=>{
-            // console.log(data)
-            if(data.code){
-                this.arr  = data.data;
-            data.data.forEach(item=>{
-               this.brr.push({
-                   flag:false,
-                   price:item.shopdata.price,
-                   count:item.count
-               })
-            })
-            }
-            
-        })
-        },
+      ...mapActions("list",["shoppings"]),
         deleteList(brforePosition,item){
                  let index = this.arr.findIndex(item=>item.shopdata.id === item.shopdata.id);
-                 console.log(index)
+                //  console.log(index)
                    this.arr.splice(index,1)
                    brforePosition()
-        },
-        deleCont(){
-          console.log(1)
         },
         countPrice(count,index){
             this.brr[index].count = count;
@@ -101,7 +85,7 @@ export default {
             })
         },
         all(){
-            console.log(1)
+            // console.log(1)
             //点击总的
             this.$refs.ipt.map(item=>{
                    item.checked  = this.$refs.allInput.checked
@@ -109,17 +93,30 @@ export default {
                this.brr.forEach(item=>{
                     item.flag = this.allInputs
                 })
+        },
+        async listAll(){
+                await this.shoppings({
+              user_id:window.localStorage.token && JSON.parse(window.localStorage.token).userid 
+            })
+          this.arr = this.arrList;
+           this.arrList.forEach(item=>{
+               this.brr.push({
+                   flag:false,
+                  price:item.shopdata.price,
+                   count:item.count
+               })
+            })
         }
     },
-    created(){
-    //    console.log(JSON.parse(window.localStorage.token).userid)
+   async created(){
         if(window.localStorage.token){
             this.goLogin = false
         }
-       this.getList()
+        await this.listAll()
     },
-    mounted(){
-    },
+  async activated(){
+       await this.listAll()
+   },
     watch:{
         brr:{
             deep:true,

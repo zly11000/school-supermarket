@@ -1,14 +1,15 @@
 <template>
     <div class="wraps">
+        <my-alert :title="red" :show="show"></my-alert>
         <my-header :title="title"></my-header>
         <main class="mains">
-            <div class="banners">
-                 <swiper :options="swiperOption" v-if="item.pictures">
+            <div class="banners" v-if="item.pictures">
+                <my-swiper :autoplay="false">
             <!-- slides -->
                  <swiper-slide v-for="(item,index) in JSON.parse(item.pictures)" :key="index">
                     <img :src="item"/>
                 </swiper-slide>
-              </swiper>
+              </my-swiper>
                 <!-- <img :src="item.cover"/> -->
             </div>
             <div class="boxs">
@@ -37,13 +38,13 @@
         </main>
         <footer class="footered">
             <div class="item">
-                <span>首页</span>
+                <span @click="goHome">首页</span>
             </div>
              <div class="item">
-                <span>购物车</span>
+                <span @click="shopCar">购物车</span>
             </div>
              <div class="item">
-                <span>加入购物车</span>
+                <span @click="addCar">加入购物车</span>
             </div>
              <div class="item">
                 <span>直接购买</span>
@@ -53,6 +54,7 @@
 </template>
 <script>
 import {mapActions,mapState} from "vuex";
+import list from "@/api/home/index"
 import { constants } from 'crypto';
 export default {
     props:{
@@ -66,37 +68,50 @@ export default {
             title:"商品详情",
              page: 0,
              item:{},
-               swiperOption: {
-        loop: true,
-        // autoplay: true,
-        observer: true, //修改swiper自己或子元素时，自动初始化swiper
-        observeParents: true, //修改swiper的父元素时，自动初始化swiper
-      },
-
+             red:"",
+             show:false
         }
     },
     computed:{
-        ...mapState("list",["res"])
+        ...mapState("list",["res","obj"])
 
     },
     methods:{
-        ...mapActions("list",["getList"]),
-        
+        ...mapActions("list",["getList","addCared"]),
+        goHome(){ //点击跳回首页
+            this.$router.push("/home")
+        },
+        shopCar(){ //点击调回购物车
+            this.$router.push("/shoppingCar")
+        },
+ 
+        async addCar() {
+            let {id} = this.$route.params;
+             this.show = true
+             this.timer = setInterval(()=>{
+             this.show = false
+            },2000)
+          await this.addCared({
+                user_id: JSON.parse(window.localStorage.token).userid,
+                shop_id: id
+          })
+          this.red = this.obj   
+      }
     },
     async created(){
-        console.log(1)
+        // console.log(1)
         let {id,typeId} = this.$route.params;
-     await this.getList({
+        await this.getList({
            type_id:typeId
         })
         this.item = this.res.find(item=>item.id === id*1);
         this.$refs.detailBottom.innerHTML = this.item.detail;
-        
-        console.log(this.item)
+        // console.log(this.item)
     },
-    mounted(){
-        
-    },
+    destroyed() {
+       //清除定时器
+       clearInterval(this.timer);
+    }
 }
 </script>
 <style  lang="scss">
@@ -131,7 +146,6 @@ export default {
                border-top-left-radius: 10px;
                border-top-right-radius:10px; 
                color:#fff;
-              
                display: flex;
               flex-direction: column;
               .tops{
@@ -140,7 +154,6 @@ export default {
                    padding:10px 10px;
                    p:nth-child(1) span{
                    font-size: 30px;
-                 
                }
               }
               .bottoms{

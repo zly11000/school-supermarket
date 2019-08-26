@@ -2,7 +2,7 @@
   <div>
             <div class="center">
                 <span v-for="(item,index) in brr" :key="index">
-                    <input type="text" v-model="item.value" :class="{active:index === ind }" @keyup="change($event,index)" ref="inputs" max="9" min="0"/>
+                    <input type="Number" v-model="item.value" :class="{active:index === ind }" @keyup="change($event,index)" ref="inputs" max="9" min="0" @keydown="down($event,index)"/>
                 </span>
             </div>
     </div>
@@ -49,19 +49,10 @@ export default {
     },
     methods:{
         change(el,ind){
+            //  console.log(1)
              if(this.brr[ind].value.trim() === "" && this.brr[ind].value.length!==1 && this.brr.length>=6){
                 return;
             }
-            //  if(el.keyCode === 8){
-            //      this.ind -= 1;
-            //     if(ind <(this.brr.length-1)){
-            //         this.brr[this.ind+1].value = "";
-            //         inputs[ind+1].focus()
-            //     }else{
-            //         inputs[ind-1].blur()
-            //     }
-            //     return;
-            // }
             this.ind = ind;
             let inputs = this.$refs.inputs;
             let currentInput = inputs[ind];
@@ -78,7 +69,22 @@ export default {
             })
             this.$emit("data",str)
         },
-      
+          /*当键盘按下的时候清空原来的数*/
+            down(el,index) {
+                 let inputs = this.$refs.inputs;
+                if(el.keyCode === 8){
+                    if(index === 0){
+                         return
+                     }
+                     if(index === 5){
+                        this.brr[index].value = ""
+                     }
+                     this.brr[index-1].value = "";
+                     this.ind = index-1;
+                     inputs[index-1].focus(); 
+                     inputs[index].blur()   
+                }
+            }
     },
     created(){
         

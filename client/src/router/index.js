@@ -42,6 +42,10 @@ let router =  new Router({
         {
             path:"/detail/:id/:typeId",
             component:()=>import("../views/detail/index.vue")
+        },
+        {
+            path:"/location",
+            component:()=>import("../views/location/index.vue")
         }
     ]
 })

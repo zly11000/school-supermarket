@@ -1,6 +1,6 @@
 <template>
     
-     <keep-alive include="home,classify">
+     <keep-alive include="home,classify,shoppingCar">
         <router-view></router-view>
      </keep-alive>
 </template>

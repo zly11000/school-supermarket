@@ -6,7 +6,7 @@
         <p>
             <span v-if="item.count">{{item.count}}</span>
         </p>
-        <p class="add" @click.stop="adds"  :disabled="open">
+        <p class="add" @click.stop="adds">
             <span>+</span>
         </p>
     </div>
@@ -34,8 +34,8 @@ export default {
     },
     data(){
         return { 
-            open:false,
-            arr:[]
+            arr:[],
+            flag:true
         }
     },
     computed:{
@@ -43,41 +43,40 @@ export default {
 
     },
     methods:{
-        // listAll(){
-        //        list.shopping({
-        //     params:{
-        //         user_id:JSON.parse(window.localStorage.token).userid 
-        //     }
-        // }).then(data=>{
-        //     this.arr  = data.data
-        //   })
-        // },
         adds(){
             //点击加
-              this.open = true
+            if(this.flag){
+                this.flag = false
                  list.addCar({
                 user_id: JSON.parse(window.localStorage.token).userid,
                 shop_id:this.item.shopdata.id
             }).then(data=>{
-                this.open = false;
                 if(data.code){
+                    this.flag = true
                     this.$emit('count',this.item.count+=1,this.index)
+                    // this.$emit('count',this.index,true)
+
                 }
             })
+            }
         },
         //点击减
         subtracted(){
-            if(this.item.count > 1){
+            if(this.flag){
+                this.flag = false
+                     if(this.item.count > 1){
              list.removeCar({
                   user_id: window.localStorage.token ? JSON.parse(window.localStorage.token).userid :'',
                   shop_id:this.item.shopdata.id
             }).then(data=>{
                 if(data.code){
+                     this.flag = true
                     this.$emit('count',this.item.count-=1,this.index)
-                    // this.item.count -= 1; 
+                    //  this.$emit('count',this.index,false)
                  }
              })
              }
+            }
         }
     },
     created(){

@@ -1,5 +1,6 @@
 <template>
 <div class="biged">
+  <my-alert :title="res" :show="show"></my-alert>
   <slot name="input"></slot>
   <dl @click="detail">
     <dt>
@@ -16,13 +17,13 @@
           ￥
           <b>{{item.price}}</b>
         </span>
-        <span v-if="open" @click.stop="goCar(index,item.id)" :style="{background:'red'}">
+        <span v-if="open" @click.stop="goCar(item.id)" :style="{background:'red'}">
             <i class="iconfont icon-gouwuche"></i>
         </span>
         <span v-else-if="open">
           <slot name="count"></slot>
-           <!-- <my-count :item="ite" :brr="brr" :allInputs="allInputs"></my-count> -->
-        </span>
+           <my-count :item="ite" :brr="brr" :allInputs="allInputs"></my-count>
+      </span>
          <span v-else>
            <slot name="count"></slot>
         </span>
@@ -34,6 +35,7 @@
 <script>
 import list from "@/api/home/index";
 import myCount from "../../shoppingCar/component/count";
+import {mapState,mapActions} from "vuex";
 export default {
   props:{
     item:{
@@ -57,30 +59,40 @@ export default {
     }
   },
   components: {
-      myCount
+      myCount,
+      show:false
   },
   data() {
     return {
-      shopingList: []
+      shopingList: [],
+      res:"",
+      show:false
     };
   },
-  computed: {},
+  computed: {
+      ...mapState("list",["obj"])
+  },
   methods: {
+      ...mapActions("list",["addCared"]),
     detail(){
       this.$router.push("/detail/"+ this.item.id + "/" + this.item.type_id)
     },
-    goCar(ind, id) {
-         list.addCar({
-          user_id: JSON.parse(window.localStorage.token).userid,
-          shop_id: id
-        }).then(data =>{
-           alert(data.msg);
-        });
+     async goCar(id) {
+             this.show = true
+             this.timer = setInterval(()=>{
+             this.show = false
+            },2000)
+          await this.addCared({
+                user_id: JSON.parse(window.localStorage.token).userid,
+                shop_id: id
+          })
+          this.res = this.obj   
     }
-   
   },
-  created() {},
-  mounted() {}
+    destroyed() {
+            //清除定时器
+            clearInterval(this.timer);
+    }
 };
 </script>
 <style scoped lang="scss">

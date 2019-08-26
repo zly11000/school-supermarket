@@ -7,9 +7,7 @@ const searchList = (data)=>request.get("/api/search",data); //搜索接口
 const addCar = (data)=>request.post("/api/car/addCar",data);//添加购物车接口
 const shopping = (data) =>request.get("/api/car/getCar",data)//购物车数据
 const removeCar = (data)=>request.post("/api/car/removeCar",data)//删除购物车
-const removeShop = (data)=>request.post("/api/car/removeShop",data)
-
-
+const removeShop = (data)=>request.post("/api/car/removeShop",data) 
 export default {
     homeBanner,
     homeShop,

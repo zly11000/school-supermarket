@@ -12,7 +12,6 @@ export default {
                     this.scrollList()
                 }
             },300))
-         
         }
     }
    
