@@ -2,9 +2,9 @@
      <div class="wrap">
       <my-header></my-header>
       <main class="mained" v-if="goLogin">亲！您未登录,请前往<router-link to="/login">登录</router-link></main>
-      <main class="main" v-else-if="!goLogin">
+      <main class="main" v-else>
         <my-remove  v-for="(item,index) in arr" :key="index" :item="item" :ind="index" :arr="arr" @delete="deleteList">
-           <my-item :item="item.shopdata" :ite="item" :index="index" :open="false" :brr="brr" :allInputs="allInputs">
+           <my-item :item="item.shopdata" :ite="item" :index="index" :open="false" :brr="brr" :allInputs="allInputs" v-if="brr">
                <template slot="input">
                     <input type="checkbox" class="inputs"  ref="ipt" @change.stop="ipts(index)" v-model="brr[index].flag" slot="input"/>
                 </template>
@@ -99,7 +99,7 @@ export default {
               user_id:window.localStorage.token && JSON.parse(window.localStorage.token).userid 
             })
           this.arr = this.arrList;
-           this.arrList.forEach(item=>{
+          this.arrList && this.arrList.forEach(item=>{
                this.brr.push({
                    flag:false,
                   price:item.shopdata.price,
@@ -110,12 +110,15 @@ export default {
     },
    async created(){
         if(window.localStorage.token){
-            this.goLogin = false
+            this.goLogin = false;
+            await this.listAll()
         }
-        await this.listAll()
     },
   async activated(){
-       await this.listAll()
+       if(window.localStorage.token){
+            this.goLogin = false;
+            await this.listAll()
+        }
    },
     watch:{
         brr:{

@@ -49,7 +49,6 @@ export default {
     },
     methods:{
         change(el,ind){
-            //  console.log(1)
              if(this.brr[ind].value.trim() === "" && this.brr[ind].value.length!==1 && this.brr.length>=6){
                 return;
             }

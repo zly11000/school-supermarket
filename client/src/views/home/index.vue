@@ -13,7 +13,7 @@
     <main class="main" id="main" ref="main">
       <div>
         <div class="banner" v-if="bannerList">
-         <my-swiper  :autoplay="true">
+         <my-swiper>
             <!-- slides -->
             <swiper-slide v-for="item in bannerList" :key="item.id">
               <a :href="item.url">

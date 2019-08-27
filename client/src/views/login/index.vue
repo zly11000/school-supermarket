@@ -54,14 +54,13 @@ export default {
     },
     methods:{
         num(){
-            // console.log(this.phoneValue)
                if(this.phoneValue.trim() === "" && this.colorFlag === false){
                 return;
             }
             userd.code({
                 phone:this.phoneValue
             }).then(data=>{
-                // console.log(data)
+                 console.log(data)
                 if(data.code){
                      this.open = !this.open;
                 }

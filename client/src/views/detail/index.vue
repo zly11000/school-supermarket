@@ -4,7 +4,7 @@
         <my-header :title="title"></my-header>
         <main class="mains">
             <div class="banners" v-if="item.pictures">
-                <my-swiper :autoplay="false">
+                <my-swiper>
             <!-- slides -->
                  <swiper-slide v-for="(item,index) in JSON.parse(item.pictures)" :key="index">
                     <img :src="item"/>
@@ -85,17 +85,22 @@ export default {
             this.$router.push("/shoppingCar")
         },
  
-        async addCar() {
+        async addCar() {      
+        if(window.localStorage.token){
             let {id} = this.$route.params;
              this.show = true
              this.timer = setInterval(()=>{
              this.show = false
             },2000)
-          await this.addCared({
+            await this.addCared({
                 user_id: JSON.parse(window.localStorage.token).userid,
                 shop_id: id
           })
           this.red = this.obj   
+        }else{
+            this.$router.push("/login")
+        }
+          
       }
     },
     async created(){
